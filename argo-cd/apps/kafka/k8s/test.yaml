@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-app  # <-- CHANGED this to match real deployment name
+  namespace: devops-demo  # <-- ADD namespace to make sure it's correct
+  labels:
+    app.kubernetes.io/instance: nginx-app  # <-- ADD label to match best practices
+spec:
+  replicas: 1
+  selector: #<-- Some comments
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+        - name: nginx
+          image: nginx-local-dev:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 80
