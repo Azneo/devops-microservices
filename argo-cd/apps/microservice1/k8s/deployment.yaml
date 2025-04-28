@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: microservice1
+  namespace: microservices  # Add this line to specify the namespace
+  labels:
+    app: microservice1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: microservice1
+  template:
+    metadata:
+      labels:
+        app: microservice1
+    spec:
+      containers:
+      - name: microservice1
+        image: nginx:latest  # Replace with your microservice image
+        ports:
+        - containerPort: 80
+        env:
+        - name: ENV_VAR_NAME
+          value: "example_value"  # Optional: Add any environment variables here
+        resources:
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
