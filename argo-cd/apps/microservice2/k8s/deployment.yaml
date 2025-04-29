@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: microservice2
+  namespace: microservices  # Ensure this is the correct namespace
+  labels:
+    app: microservice2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: microservice2
+  template:
+    metadata:
+      labels:
+        app: microservice2
+    spec:
+      containers:
+      - name: microservice2
+        image: nginx:latest  # Replace with the image for microservice2
+        ports:
+        - containerPort: 80
+        env:
+        - name: ENV_VAR_NAME
+          value: "example_value"  # Optional: Add any environment variables here
+        resources:
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
