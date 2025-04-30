@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: microservice1
-          image: azneo/microservice1:latest
+          image: azizishankhojaev/microservice1:latest
           ports:
             - containerPort: 8080  # Optional: if serving HTTP
           env:
