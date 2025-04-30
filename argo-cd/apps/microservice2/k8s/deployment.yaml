@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: microservice2
-          image: azneo/microservice2:latest
+          image: azizishankhojaev/microservice2:latest
           ports:
             - containerPort: 8080  # Optional: if you expose a port
           env:
