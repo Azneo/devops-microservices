@@ -1,15 +1,50 @@
-replicaCount: 1
+# kafka-specific settings
+replicaCount: 1  # Single replica for simplicity
+
+image:
+  tag: 32.2.2  # The Kafka image version you want to use
 
 zookeeper:
   enabled: true
-  replicaCount: 1
+  replicaCount: 1  # Single replica for Zookeeper
+  persistence:
+    enabled: true
+    storageClass: "standard"
+    size: 2Gi  # Adjust size based on your disk space
 
-auth:
-  enabled: false
+persistence:
+  enabled: true
+  storageClass: "standard"  # Adjust storage class based on your environment
+  size: 2Gi  # Adjust size based on available space
 
-listeners:
-  client:
-    protocol: PLAINTEXT
+resources:
+  requests:
+    memory: "1Gi"  # Requests 1GB RAM for Kafka
+    cpu: "1"  # Requests 1 CPU core for Kafka
+  limits:
+    memory: "2Gi"  # Limits to 2GB RAM for Kafka
+    cpu: "2"  # Limits to 2 CPU cores for Kafka
 
 service:
   type: ClusterIP
+  port: 9092
+  name: kafka
+
+# Kafka-specific configurations
+configuration:
+  broker:
+    config:
+      log.dirs: /var/lib/kafka/data
+    listeners: INSIDE://kafka:9093
+    advertised.listeners: INSIDE://kafka:9093
+    listener.security.protocol.map: INSIDE:PLAINTEXT
+    listener.name.inside.security.protocol: PLAINTEXT
+    listener.name.inside.port: 9093
+    listeners.internal: INSIDE://kafka:9093
+  log:
+    level: info
+
+# Setting the image for Kafka
+image:
+  repository: bitnami/kafka
+  tag: 32.2.2  # Set your preferred version
