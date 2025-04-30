@@ -2,12 +2,12 @@ apiVersion: v1
 kind: Service
 metadata:
   name: microservice1
-  namespace: microservices  # Add this line to specify the namespace
+  namespace: microservices
 spec:
   selector:
-    app: microservice1  # Must match the label in the Deployment
+    app: microservice1
   ports:
     - protocol: TCP
       port: 80
-      targetPort: 80
-  type: ClusterIP  # Use ClusterIP for internal access within the cluster
+      targetPort: 8080
+  type: ClusterIP

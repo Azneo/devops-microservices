@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: microservice2
-  namespace: microservices  # Ensure this is the correct namespace
+  namespace: microservices
   labels:
     app: microservice2
 spec:
@@ -16,17 +16,19 @@ spec:
         app: microservice2
     spec:
       containers:
-      - name: microservice2
-        image: nginx:latest  # Replace with the image for microservice2
-        ports:
-        - containerPort: 80
-        env:
-        - name: ENV_VAR_NAME
-          value: "example_value"  # Optional: Add any environment variables here
-        resources:
-          limits:
-            memory: "512Mi"
-            cpu: "500m"
-          requests:
-            memory: "256Mi"
-            cpu: "250m"
+        - name: microservice2
+          image: azneo/microservice2:latest
+          ports:
+            - containerPort: 8080  # Optional: if you expose a port
+          env:
+            - name: KAFKA_BROKER
+              value: "kafka.default.svc.cluster.local:9092"
+            - name: KAFKA_TOPIC
+              value: "test-topic"
+          resources:
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
