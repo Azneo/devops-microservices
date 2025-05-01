@@ -1,40 +1,50 @@
 package main
 
 import (
-    "fmt"
-    "log"
-    "github.com/IBM/sarama"
+	"fmt"
+	"log"
+	"time"
+
+	"github.com/IBM/sarama"
 )
 
 func main() {
-    // Kafka broker address
-    kafkaBrokers := []string{"kafka.microservices.svc.cluster.local:9092"} // Use the Kafka service DNS in Kubernetes
+	kafkaBrokers := []string{"kafka.microservices.svc.cluster.local:9092"}
 
-    // Kafka Producer config
-    config := sarama.NewConfig()
-    config.Producer.Return.Successes = true
+	config := sarama.NewConfig()
+	config.Producer.Return.Successes = true
 
-    // Disable any SASL/TLS just to be safe
-    config.Net.SASL.Enable = false
-    config.Net.TLS.Enable = false
+	config.Net.SASL.Enable = true
+	config.Net.SASL.User = "user1"
+	config.Net.SASL.Password = "C6lH3xSsg9"
+	config.Net.SASL.Mechanism = sarama.SASLTypePlaintext
+	config.Net.SASL.Handshake = true
+	config.Net.SASL.Version = sarama.SASLHandshakeV1
 
+	config.Net.TLS.Enable = false
+	config.Metadata.Full = true
 
-    producer, err := sarama.NewSyncProducer(kafkaBrokers, config)
-    if err != nil {
-        log.Fatal("Error creating Kafka producer: ", err)
-    }
-    defer producer.Close()
+	producer, err := sarama.NewSyncProducer(kafkaBrokers, config)
+	if err != nil {
+		log.Fatal("Error creating Kafka producer:", err)
+	}
+	defer producer.Close()
 
-    // Sending a message to Kafka
-    message := &sarama.ProducerMessage{
-        Topic: "microservice-topic", // Topic name
-        Value: sarama.StringEncoder("Hello from Microservice 1!"),
-    }
+	fmt.Println("Kafka producer started. Sending messages every 5 seconds...")
 
-    // Send the message
-    partition, offset, err := producer.SendMessage(message)
-    if err != nil {
-        log.Fatal("Error sending message to Kafka: ", err)
-    }
-    fmt.Printf("Message sent to partition %d with offset %d\n", partition, offset)
+	for {
+		message := &sarama.ProducerMessage{
+			Topic: "microservice-topic",
+			Value: sarama.StringEncoder("Hello from Microservice 1!"),
+		}
+
+		partition, offset, err := producer.SendMessage(message)
+		if err != nil {
+			log.Println("Error sending message to Kafka:", err)
+		} else {
+			fmt.Printf("Sent message to partition %d with offset %d\n", partition, offset)
+		}
+
+		time.Sleep(5 * time.Second)
+	}
 }
