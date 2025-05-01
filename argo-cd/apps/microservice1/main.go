@@ -13,6 +13,12 @@ func main() {
     // Kafka Producer config
     config := sarama.NewConfig()
     config.Producer.Return.Successes = true
+
+    // Disable any SASL/TLS just to be safe
+    config.Net.SASL.Enable = false
+    config.Net.TLS.Enable = false
+
+
     producer, err := sarama.NewSyncProducer(kafkaBrokers, config)
     if err != nil {
         log.Fatal("Error creating Kafka producer: ", err)

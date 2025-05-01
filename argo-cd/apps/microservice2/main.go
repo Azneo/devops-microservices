@@ -17,6 +17,10 @@ func main() {
     config := sarama.NewConfig()
     config.Consumer.Return.Errors = true
 
+	// Disable any SASL/TLS just to be safe
+	config.Net.SASL.Enable = false
+	config.Net.TLS.Enable = false
+
     master, err := sarama.NewConsumer([]string{broker}, config)
     if err != nil {
         panic(err)
